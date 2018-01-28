@@ -1,0 +1,177 @@
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+    "Parameters" : {
+      "VPCName" : {
+        "Type"        : "String"
+      },
+      "VPCCidr" : {
+        "Type"        : "String"
+      },
+      "PublicSubnetCidr1" : {
+        "Type"        : "String"
+      },
+      "PublicSubnetCidr2" : {
+        "Type"        : "String"
+      }
+    },
+    "Resources" : {
+      "VPC" : {
+        "Type" : "AWS::EC2::VPC",
+        "Properties" : {
+          "CidrBlock" : {
+            "Ref" : "VPCCidr"
+          },
+          "EnableDnsSupport" : true,
+          "EnableDnsHostnames" : true,
+          "InstanceTenancy" : "default",
+          "Tags" : [
+            {
+              "Key" : "Name",
+              "Value": { "Ref" : "VPCName" }
+            }
+          ]
+        }
+      },
+      "IGW" : {
+        "Type" : "AWS::EC2::InternetGateway",
+        "Properties" : {
+          "Tags" : [
+            {
+              "Key" :"Name",
+              "Value" : { "Fn::Join": ["", [ { "Ref" : "VPCName"},"-IGW"]] }
+            }
+          ]
+        }
+      },
+      "VPCGatewayAttachement" : {
+        "Type" : "AWS::EC2::VPCGatewayAttachment",
+        "Properties" : {
+          "InternetGatewayId" : {
+            "Ref" : "IGW"
+          },
+          "VpcId" : {
+            "Ref" : "VPC"
+          }
+        }
+      },
+      "PublicSubnet1" : {
+        "Type" : "AWS::EC2::Subnet",
+        "Properties" : {
+          "VpcId" : {
+            "Ref" : "VPC"
+          },
+          "CidrBlock" : {
+            "Ref" : "PublicSubnetCidr1"
+          },
+          "AvailabilityZone" : {
+            "Fn::Select" : [ 0, { "Fn::GetAZs" : "" } ]
+          },
+          "MapPublicIpOnLaunch" : true,
+          "Tags" : [
+            {
+              "Key" :"Name",
+              "Value" : "PublicSubnet1"
+            }
+          ]
+        }
+      },
+      "PublicSubnet2" : {
+        "Type" : "AWS::EC2::Subnet",
+        "Properties" : {
+          "VpcId" : {
+            "Ref" : "VPC"
+          },
+          "CidrBlock" : {
+            "Ref" : "PublicSubnetCidr2"
+          },
+          "AvailabilityZone" : {
+            "Fn::Select" : [ 1, { "Fn::GetAZs" : "" } ]
+          },
+          "Tags" : [
+            {
+              "Key" :"Name",
+              "Value" : "PublicSubnet2"
+            }
+          ],
+          "MapPublicIpOnLaunch" : true
+        }
+      },
+      "PublicSubnetRT" : {
+        "Type" : "AWS::EC2::RouteTable",
+        "Properties" : {
+          "VpcId" : {
+            "Ref" : "VPC"
+          },
+          "Tags" : [
+            {
+              "Key" :"Name",
+              "Value" : "PublicSubnetRT"
+            }
+          ]
+        }
+      },
+      "PublicSubnetRoute" : {
+        "Type" : "AWS::EC2::Route",
+        "Properties" : {
+          "RouteTableId" : {
+            "Ref" : "PublicSubnetRT"
+          },
+          "GatewayId" : {
+            "Ref" : "IGW"
+          },
+          "DestinationCidrBlock" : "0.0.0.0/0"
+        }
+      },
+      "PublicSubnetRTAssociation1" : {
+        "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+        "Properties" : {
+          "RouteTableId" : {
+            "Ref" : "PublicSubnetRT"
+          },
+          "SubnetId" : {
+            "Ref" : "PublicSubnet1"
+          }
+        }
+      },
+      "PublicSubnetRTAssociation2" : {
+        "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+        "Properties" : {
+          "RouteTableId" : {
+            "Ref" : "PublicSubnetRT"
+          },
+          "SubnetId" : {
+            "Ref" : "PublicSubnet2"
+          }
+        }
+      },
+      "SecurityGroup" : {
+        "Type" : "AWS::EC2::SecurityGroup",
+        "Properties" : {
+          "VpcId" : { "Ref" : "VPC" },
+          "GroupDescription" : "Security group for hands-on.",
+          "SecurityGroupIngress" : [
+            { "IpProtocol" : "tcp", "FromPort" : 5439, "ToPort" : 5439, "CidrIp" : "0.0.0.0/0" },
+            { "IpProtocol" : "tcp", "FromPort" : 22, "ToPort" : 22, "CidrIp" : "0.0.0.0/0" }
+          ]
+        }
+      }
+    },
+    "Outputs" : {
+      "VpcId" : {
+        "Description" : "ID of the VPC for this handson.",
+        "Value" : { "Ref" : "VPC" }
+      },
+      "SecurityGroupId" : {
+        "Description" : "ID of the security group for this handson.",
+        "Value" : { "Ref" : "SecurityGroup" }
+      },
+      "PublicSubnet1Id" : {
+        "Description" : "ID of the public subnet1 for this handson.",
+        "Value" : { "Ref" : "PublicSubnet1"}
+      },
+      "PublicSubnet2Id" : {
+        "Description" : "ID of the public subnet2 for this handson.",
+        "Value" : { "Ref" : "PublicSubnet2"}
+      }
+    }
+}

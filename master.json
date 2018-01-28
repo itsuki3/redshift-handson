@@ -1,0 +1,133 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Parameters" : {
+    "VPCName" : {
+      "Description" : "Name of the VPC",
+      "Type"        : "String",
+      "AllowedPattern" : "([a-zA-Z0-9])+"
+    },
+    "VPCCidr" : {
+      "Description" : "CIDR Block for the VPC",
+      "Type"        : "String",
+      "Default"     : "10.0.0.0/16",
+      "AllowedPattern" : "[a-zA-Z0-9]+\\..+"
+    },
+    "PublicSubnetCidr1" : {
+      "Description" : "CIDR block for Public Subnet 1.",
+      "Type"        : "String",
+      "Default"     : "10.0.40.0/24",
+      "AllowedPattern" : "[a-zA-Z0-9]+\\..+"
+    },
+    "PublicSubnetCidr2" : {
+      "Description" : "CIDR block for Public Subnet 2.",
+      "Type"        : "String",
+      "Default"     : "10.0.41.0/24",
+      "AllowedPattern" : "[a-zA-Z0-9]+\\..+"
+    },
+    "ClusterType" : {
+      "Description" : "The type of cluster.",
+      "Type" : "String",
+      "Default" : "multi-node",
+      "AllowedValues" : [ "single-node", "multi-node" ]
+    },
+    "NumberOfNodes" : {
+      "Description" : "The number of compute nodes in the cluster. For multi-node clusters, the NumberOfNodes parameter must be greater than 1.",
+      "Type" : "Number",
+      "Default" : "2"
+    },
+    "NodeType" : {
+      "Description" : "The type of node to be provisioned.",
+      "Type" : "String",
+      "Default" : "dc1.large",
+      "AllowedValues" : [ "ds2.xlarge", "ds2.8xlarge", "dc2.large", "dc2.8xlarge", "dc1.large" ]
+    },
+    "DatabaseName" : {
+      "Description" : "The name of the first database to be created when the cluster is created.",
+      "Type" : "String",
+      "Default" : "handsondb",
+      "AllowedPattern" : "([a-z]|[0-9])+"
+    },
+    "MasterUsername" : {
+      "Description" : "The user name that is associated with the master user account for the cluster that is being created.",
+      "Type" : "String",
+      "Default" : "awsuser",
+      "AllowedPattern" : "([a-z])([a-z]|[0-9])*"
+    },
+    "MasterUserPassword" : {
+      "Description" : "The password that is associated with the master user account for the cluster that is being created.",
+      "Type" : "String",
+      "NoEcho" : "true"
+    }
+  },
+  "Resources" : {
+    "myStack4VPC" : {
+      "Type" : "AWS::CloudFormation::Stack",
+      "Properties" : {
+        "TemplateURL" : "https://s3-ap-northeast-1.amazonaws.com/my-bucket-4-handson/Cfn/vpc.json",
+        "Parameters" : {
+          "VPCName": {
+            "Ref" : "VPCName"
+          },
+          "VPCCidr": {
+            "Ref" : "VPCCidr"
+          },
+          "PublicSubnetCidr1" : {
+            "Ref" : "PublicSubnetCidr1"
+          },
+          "PublicSubnetCidr2" : {
+            "Ref" : "PublicSubnetCidr2"
+          }
+        },
+        "TimeoutInMinutes": "30"
+      }
+    },
+    "myStack4Redshift" : {
+      "Type" : "AWS::CloudFormation::Stack",
+      "Properties" : {
+        "TemplateURL" : "https://s3-ap-northeast-1.amazonaws.com/my-bucket-4-handson/Cfn/redshift.json",
+        "Parameters" : {
+          "VPC": {
+            "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VpcId" ]
+          },
+          "SecurityGroup" : {
+            "Fn::GetAtt" : [ "myStack4VPC", "Outputs.SecurityGroupId"]
+          },
+          "PublicSubnet1" : {
+            "Fn::GetAtt" : [ "myStack4VPC", "Outputs.PublicSubnet1Id"]
+          },
+          "PublicSubnet2" : {
+            "Fn::GetAtt" : [ "myStack4VPC", "Outputs.PublicSubnet2Id"]
+          },
+          "ClusterType": {
+            "Ref" : "ClusterType"
+          },
+          "NumberOfNodes": {
+            "Ref" : "NumberOfNodes"
+          },
+          "NodeType": {
+            "Ref" : "NodeType"
+          },
+          "DatabaseName" : {
+            "Ref" : "DatabaseName"
+          },
+          "MasterUsername" : {
+            "Ref" : "MasterUsername"
+          },
+          "MasterUserPassword" : {
+            "Ref" : "MasterUserPassword"
+          }
+        },
+        "TimeoutInMinutes": "30"
+      }
+    }
+  },
+  "Outputs": {
+    "StackRef": { "Value": { "Ref" : "myStack4VPC" } },
+    "StackRef": { "Value": { "Ref" : "myStack4Redshift" } },
+    "OutputFromNestedStack" : {
+      "Value" : { "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VpcId" ] },
+      "Value" : { "Fn::GetAtt" : [ "myStack4Redshift", "Outputs.RedshiftClusterName" ] },
+      "Value" : { "Fn::GetAtt" : [ "myStack4Redshift", "Outputs.RedshiftClusterEndpoint" ] }
+    }
+  }
+}

@@ -1,0 +1,184 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Parameters" : {
+    "VPC" : {
+      "Type" : "String"
+    },
+    "SecurityGroup" : {
+      "Type" : "String"
+    },
+    "PublicSubnet1" : {
+      "Type" : "String"
+    },
+    "PublicSubnet2" : {
+      "Type" : "String"
+    },
+    "ClusterType" : {
+      "Type" : "String"
+    },
+    "NumberOfNodes" : {
+      "Type" : "Number"
+    },
+    "NodeType" : {
+      "Type" : "String"
+    },
+    "DatabaseName" : {
+      "Type" : "String"
+    },
+    "MasterUsername" : {
+      "Type" : "String"
+    },
+    "MasterUserPassword" : {
+      "Type" : "String"
+    }
+  },
+  "Conditions" : {
+    "IsMultiNodeCluster" : {
+      "Fn::Equals" : [{ "Ref" : "ClusterType" }, "multi-node" ]
+    }
+  },
+  "Resources" : {
+    "RedshiftClusterSubnetGroup" : {
+      "Type" : "AWS::Redshift::ClusterSubnetGroup",
+      "Properties" : {
+        "Description" : "Public subnet group for the Redshift cluster.",
+        "SubnetIds" : [
+          { "Ref" : "PublicSubnet1" },
+          { "Ref" : "PublicSubnet2" }
+        ]
+      }
+    },
+    "RedshiftClusterParameterGroup" : {
+      "Type" : "AWS::Redshift::ClusterParameterGroup",
+      "Properties" : {
+        "Description" : "Cluster parameter group for the Redshift cluster.",
+        "ParameterGroupFamily" : "redshift-1.0",
+        "Parameters" : [
+          {
+            "ParameterName" : "enable_user_activity_logging",
+            "ParameterValue" : "true"
+          }
+        ]
+      }
+    },
+    "RedshiftRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version" : "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [ "redshift.amazonaws.com" ]
+              },
+              "Action": [ "sts:AssumeRole" ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [ {
+          "PolicyName": "RedshiftandSpectrumCustomizedPolicy",
+          "PolicyDocument": {
+            "Version" : "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "athena:*"
+                ],
+                "Resource": [
+                  "*"
+                ]
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "glue:CreateDatabase",
+                  "glue:DeleteDatabase",
+                  "glue:GetDatabase",
+                  "glue:GetDatabases",
+                  "glue:UpdateDatabase",
+                  "glue:CreateTable",
+                  "glue:DeleteTable",
+                  "glue:BatchDeleteTable",
+                  "glue:UpdateTable",
+                  "glue:GetTable",
+                  "glue:GetTables",
+                  "glue:BatchCreatePartition",
+                  "glue:CreatePartition",
+                  "glue:DeletePartition",
+                  "glue:BatchDeletePartition",
+                  "glue:UpdatePartition",
+                  "glue:GetPartition",
+                  "glue:GetPartitions",
+                  "glue:BatchGetPartition"
+                ],
+                "Resource": [
+                  "*"
+                ]
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "s3:GetBucketLocation",
+                  "s3:GetObject",
+                  "s3:ListBucket",
+                  "s3:ListBucketMultipartUploads",
+                  "s3:ListMultipartUploadParts",
+                  "s3:AbortMultipartUpload",
+                  "s3:CreateBucket",
+                  "s3:PutObject"
+                ],
+                "Resource": [
+                  "arn:aws:s3:::aws-athena-query-results-*"
+                ]
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                    "s3:Get*",
+                    "s3:List*"
+                  ],
+                  "Resource": [
+                    "*"
+                  ]
+                }
+              ]
+            }
+          } ]
+        }
+      },
+      "RedshiftCluster" : {
+        "Type" : "AWS::Redshift::Cluster",
+        "DependsOn" : [ "RedshiftClusterSubnetGroup", "RedshiftClusterParameterGroup" ],
+        "Properties" : {
+          "ClusterType" : { "Ref" : "ClusterType" },
+          "NumberOfNodes" : { "Fn::If" : [ "IsMultiNodeCluster", { "Ref" : "NumberOfNodes" }, { "Ref" : "AWS::NoValue" } ] },
+          "NodeType" : { "Ref" : "NodeType" },
+          "DBName" : { "Ref" : "DatabaseName" },
+          "MasterUsername" : { "Ref" : "MasterUsername" },
+          "MasterUserPassword" : { "Ref" : "MasterUserPassword" },
+          "ClusterParameterGroupName" : { "Ref" : "RedshiftClusterParameterGroup" },
+          "VpcSecurityGroupIds" : [ { "Ref" : "SecurityGroup" } ],
+          "ClusterSubnetGroupName" : { "Ref" : "RedshiftClusterSubnetGroup" },
+          "IamRoles" : [ {"Fn::GetAtt" : [ "RedshiftRole", "Arn" ] } ],
+          "PubliclyAccessible" : "true"
+        }
+      }
+  },
+  "Outputs" : {
+    "RedshiftClusterName" : {
+      "Description" : "Name of the Redshift cluster.",
+      "Value" : { "Ref" : "RedshiftCluster" }
+    },
+    "RedshiftClusterEndpoint" : {
+      "Description" : "Cluster endpoint.",
+      "Value" : { "Fn::Join" : [ ":", [ { "Fn::GetAtt" : [ "RedshiftCluster", "Endpoint.Address" ] }, { "Fn::GetAtt" : [ "RedshiftCluster", "Endpoint.Port" ] } ] ] }
+    },
+    "Role" : {
+      "Description" : "Name of the role for the Redshift cluster.",
+      "Value" : { "Ref" : "RedshiftRole" }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "Statement" : [
+  {
+    "Effect" : "Deny",
+    "Principal" : "*",
+    "Action" : "Update:*",
+    "Resource" : "*",
+    "Condition" : {
+      "StringEquals" : {
+        "ResourceType" : ["AWS::EC2::VPC", "AWS::Redshift::Cluster"]
+      }
+    }
+  },
+  {
+    "Effect" : "Allow",
+    "Principal" : "*",
+    "Action" : "Update:*",
+    "Resource" : "*"
+  }
+  ]
+}
