@@ -122,11 +122,19 @@
     }
   },
   "Outputs": {
-    "StackRef": { "Value": { "Ref" : "myStack4VPC" } },
-    "StackRef": { "Value": { "Ref" : "myStack4Redshift" } },
-    "OutputFromNestedStack" : {
-      "Value" : { "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VpcId" ] },
-      "Value" : { "Fn::GetAtt" : [ "myStack4Redshift", "Outputs.RedshiftClusterName" ] },
+    "StackRef": {
+      "Value": { "Ref" : "myStack4VPC" }
+    },
+    "Output1FromNestedStackVPC" : {
+      "Value" : { "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VpcId" ] }
+    },
+    "StackRef": {
+      "Value": { "Ref" : "myStack4Redshift" }
+    },
+    "Output1FromNestedStackRedshift" : {
+      "Value" : { "Fn::GetAtt" : [ "myStack4Redshift", "Outputs.RedshiftClusterName" ] }
+    },
+    "Output2FromNestedStackRedshift" : {
       "Value" : { "Fn::GetAtt" : [ "myStack4Redshift", "Outputs.RedshiftClusterEndpoint" ] }
     }
   }
