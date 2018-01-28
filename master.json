@@ -122,13 +122,13 @@
     }
   },
   "Outputs": {
-    "StackRef": {
+    "StackRef1": {
       "Value": { "Ref" : "myStack4VPC" }
     },
     "Output1FromNestedStackVPC" : {
       "Value" : { "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VpcId" ] }
     },
-    "StackRef": {
+    "StackRef2": {
       "Value": { "Ref" : "myStack4Redshift" }
     },
     "Output1FromNestedStackRedshift" : {
