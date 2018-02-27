@@ -49,7 +49,7 @@
           "InternetGatewayId" : {
             "Ref" : "IGW"
           },
-          "VPCId" : {
+          "VpcId" : {
             "Ref" : "VPC"
           }
         }
@@ -57,7 +57,7 @@
       "PublicSubnet1" : {
         "Type" : "AWS::EC2::Subnet",
         "Properties" : {
-          "VPCId" : {
+          "VpcId" : {
             "Ref" : "VPC"
           },
           "CidrBlock" : {
@@ -78,7 +78,7 @@
       "PublicSubnet2" : {
         "Type" : "AWS::EC2::Subnet",
         "Properties" : {
-          "VPCId" : {
+          "VpcId" : {
             "Ref" : "VPC"
           },
           "CidrBlock" : {
@@ -99,7 +99,7 @@
       "PublicSubnetRT" : {
         "Type" : "AWS::EC2::RouteTable",
         "Properties" : {
-          "VPCId" : {
+          "VpcId" : {
             "Ref" : "VPC"
           },
           "Tags" : [
@@ -147,7 +147,7 @@
       "SecurityGroup" : {
         "Type" : "AWS::EC2::SecurityGroup",
         "Properties" : {
-          "VPCId" : { "Ref" : "VPC" },
+          "VpcId" : { "Ref" : "VPC" },
           "GroupDescription" : "Security group for hands-on.",
           "SecurityGroupIngress" : [
             { "IpProtocol" : "tcp", "FromPort" : 5439, "ToPort" : 5439, "CidrIp" : "0.0.0.0/0" },
@@ -157,7 +157,7 @@
       }
     },
     "Outputs" : {
-      "VPCId" : {
+      "VpcId" : {
         "Description" : "ID of the VPC for this handson.",
         "Value" : { "Ref" : "VPC" }
       },

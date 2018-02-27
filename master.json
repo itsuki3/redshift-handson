@@ -33,13 +33,13 @@
           "default" : "VPC Name"
         },
         "VPCCidr" : {
-          "default" : "VPC CIDR"
+          "default" : "VPC CIDR Range"
         },
         "PublicSubnetCidr1" : {
-          "default" : "Public Subet1 CIDR"
+          "default" : "Public Subet1 CIDR Range"
         },
         "PublicSubnetCidr2" : {
-          "default" : "Public Subet2 CIDR"
+          "default" : "Public Subet2 CIDR Range"
         },
         "ClusterType" : {
           "default" : "Redshift Cluster Type"
@@ -49,6 +49,9 @@
         },
         "NodeType" : {
           "default" : "Cluster Node Type"
+        },
+        "DatabaseName" : {
+          "default" : "Database Name"
         },
         "MasterUsername" : {
           "default" : "Master User Name"
@@ -147,7 +150,7 @@
         "TemplateURL" : "https://s3-ap-northeast-1.amazonaws.com/my-bucket-4-handson/Cfn/redshift.json",
         "Parameters" : {
           "VPC": {
-            "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VPCId" ]
+            "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VpcId" ]
           },
           "SecurityGroup" : {
             "Fn::GetAtt" : [ "myStack4VPC", "Outputs.SecurityGroupId"]
@@ -183,19 +186,28 @@
   },
   "Outputs": {
     "StackRef1": {
+      "Description" : "(Stack ID of the VPC)",
       "Value": { "Ref" : "myStack4VPC" }
     },
     "Output1FromNestedStackVPC" : {
-      "Value" : { "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VPCId" ] }
+      "Description" : "ID of the VPC for this handson.",
+      "Value" : { "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VpcId" ] }
+    },
+    "Output2FromNestedStackVPC" : {
+      "Description" : "ID of the security group for this handson.",
+      "Value" : { "Fn::GetAtt" : [ "myStack4VPC", "Outputs.SecurityGroupId" ] }
     },
     "StackRef2": {
+      "Description" : "(Stack ID of the Redshift cluster)",
       "Value": { "Ref" : "myStack4Redshift" }
     },
     "Output1FromNestedStackRedshift" : {
-      "Value" : { "Fn::GetAtt" : [ "myStack4Redshift", "Outputs.RedshiftClusterName" ] }
+      "Description" : "Redshift cluster endpoint.",
+      "Value" : { "Fn::GetAtt" : [ "myStack4Redshift", "Outputs.RedshiftClusterEndpoint" ] }
     },
     "Output2FromNestedStackRedshift" : {
-      "Value" : { "Fn::GetAtt" : [ "myStack4Redshift", "Outputs.RedshiftClusterEndpoint" ] }
+      "Description" : "Amazon Resource Name (ARN) of the role for the Redshift cluster.",
+      "Value" : { "Fn::GetAtt" : [ "myStack4Redshift", "Outputs.RedshiftClusterRole" ] }
     }
   }
 }

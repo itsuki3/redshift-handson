@@ -160,9 +160,9 @@
           "MasterUsername" : { "Ref" : "MasterUsername" },
           "MasterUserPassword" : { "Ref" : "MasterUserPassword" },
           "ClusterParameterGroupName" : { "Ref" : "RedshiftClusterParameterGroup" },
-          "VPCSecurityGroupIds" : [ { "Ref" : "SecurityGroup" } ],
+          "VpcSecurityGroupIds" : [ { "Ref" : "SecurityGroup" } ],
           "ClusterSubnetGroupName" : { "Ref" : "RedshiftClusterSubnetGroup" },
-          "IamRoles" : [ {"Fn::GetAtt" : [ "RedshiftRole", "Arn" ] } ],
+          "IamRoles" : [ { "Fn::GetAtt" : [ "RedshiftRole", "Arn" ] } ],
           "PubliclyAccessible" : "true"
         }
       }
@@ -176,9 +176,9 @@
       "Description" : "Redshift cluster endpoint.",
       "Value" : { "Fn::Join" : [ ":", [ { "Fn::GetAtt" : [ "RedshiftCluster", "Endpoint.Address" ] }, { "Fn::GetAtt" : [ "RedshiftCluster", "Endpoint.Port" ] } ] ] }
     },
-    "RedshiftRoleARN" : {
-      "Description" : "Role ARN of the IAM role attached to the Redshift cluster.",
-      "Value" : [ {"Fn::GetAtt" : [ "RedshiftRole", "Arn" ] } ]
+    "RedshiftClusterRole" : {
+      "Description" : "Amazon Resource Name (ARN) of the role for the Redshift cluster.",
+      "Value" : { "Fn::GetAtt" : [ "RedshiftRole", "Arn" ] }
     }
   }
 }
