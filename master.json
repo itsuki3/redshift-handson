@@ -1,9 +1,69 @@
 {
   "AWSTemplateFormatVersion" : "2010-09-09",
-  "Parameters" : {
+  "Metadata" : {
+    "AWS::CloudFormation::Interface" : {
+      "ParameterGroups" : [
+        {
+          "Label" : {
+            "default" : "VPC Configuration"
+          },
+          "Parameters" : [
+            "VPCName",
+            "VPCCidr",
+            "PublicSubnetCidr1",
+            "PublicSubnetCidr2"
+          ]
+        },
+        {
+          "Label" : {
+            "default" : "Redshift Configuration"
+          },
+          "Parameters" : [
+            "ClusterType",
+            "NumberOfNodes",
+            "NodeType",
+            "DatabaseName",
+            "MasterUsername",
+            "MasterUserPassword"
+          ]
+        }
+      ],
+      "ParameterLabels" : {
+        "VPCName" : {
+          "default" : "VPC Name"
+        },
+        "VPCCidr" : {
+          "default" : "VPC CIDR range"
+        },
+        "PublicSubnetCidr1" : {
+          "default" : "Public Subet1 CIDR range"
+        },
+        "PublicSubnetCidr2" : {
+          "default" : "Public Subet2 CIDR range"
+        },
+        "ClusterType" : {
+          "default" : "Redshift cluster type"
+        },
+        "NumberOfNodes" : {
+          "default" : "Number of cluster nodes"
+        },
+        "NodeType" : {
+          "default" : "Cluster node type"
+        },
+        "MasterUsername" : {
+          "default" : "Master user name"
+        },
+        "MasterUserPassword" : {
+          "default" : "Master user password)"
+        }
+      }
+    }
+},
+"Parameters" : {
     "VPCName" : {
       "Description" : "Name of the VPC",
       "Type"        : "String",
+      "Default"     : "HandsonVPC",
       "AllowedPattern" : "([a-zA-Z0-9])+"
     },
     "VPCCidr" : {
@@ -25,36 +85,36 @@
       "AllowedPattern" : "[a-zA-Z0-9]+\\..+"
     },
     "ClusterType" : {
-      "Description" : "The type of cluster.",
+      "Description" : "Type of the Redshift cluster.",
       "Type" : "String",
-      "Default" : "multi-node",
+      "Default" : "single-node",
       "AllowedValues" : [ "single-node", "multi-node" ]
     },
     "NumberOfNodes" : {
-      "Description" : "The number of compute nodes in the cluster. For multi-node clusters, the NumberOfNodes parameter must be greater than 1.",
+      "Description" : "Number of compute nodes in the cluster. For multi-node clusters, the NumberOfNodes parameter must be greater than 1.",
       "Type" : "Number",
-      "Default" : "2"
+      "Default" : "1"
     },
     "NodeType" : {
-      "Description" : "The type of node to be provisioned.",
+      "Description" : "Type of node to be provisioned.",
       "Type" : "String",
       "Default" : "ds2.xlarge",
       "AllowedValues" : [ "ds2.xlarge", "ds2.8xlarge", "dc2.large", "dc2.8xlarge", "dc1.large", "dc1.8xlarge"  ]
     },
     "DatabaseName" : {
-      "Description" : "The name of the first database to be created when the cluster is created.",
+      "Description" : "Name of the first database to be created when the cluster is created.",
       "Type" : "String",
       "Default" : "handsondb",
       "AllowedPattern" : "([a-z]|[0-9])+"
     },
     "MasterUsername" : {
-      "Description" : "The user name that is associated with the master user account for the cluster that is being created.",
+      "Description" : "User name that is associated with the master user account for the cluster that is being created.",
       "Type" : "String",
       "Default" : "awsuser",
       "AllowedPattern" : "([a-z])([a-z]|[0-9])*"
     },
     "MasterUserPassword" : {
-      "Description" : "The password that is associated with the master user account for the cluster that is being created.",
+      "Description" : "Password for the master user (remeber what you typed here).",
       "Type" : "String",
       "NoEcho" : "true"
     }
