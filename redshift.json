@@ -160,7 +160,7 @@
           "MasterUsername" : { "Ref" : "MasterUsername" },
           "MasterUserPassword" : { "Ref" : "MasterUserPassword" },
           "ClusterParameterGroupName" : { "Ref" : "RedshiftClusterParameterGroup" },
-          "VpcSecurityGroupIds" : [ { "Ref" : "SecurityGroup" } ],
+          "VPCSecurityGroupIds" : [ { "Ref" : "SecurityGroup" } ],
           "ClusterSubnetGroupName" : { "Ref" : "RedshiftClusterSubnetGroup" },
           "IamRoles" : [ {"Fn::GetAtt" : [ "RedshiftRole", "Arn" ] } ],
           "PubliclyAccessible" : "true"

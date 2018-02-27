@@ -8,8 +8,8 @@
             "default" : "VPC Configuration"
           },
           "Parameters" : [
-            "VpcName",
-            "VpcCidr",
+            "VPCName",
+            "VPCCidr",
             "PublicSubnetCidr1",
             "PublicSubnetCidr2"
           ]
@@ -29,45 +29,45 @@
         }
       ],
       "ParameterLabels" : {
-        "VpcName" : {
+        "VPCName" : {
           "default" : "VPC Name"
         },
-        "VpcCidr" : {
-          "default" : "VPC CIDR range"
+        "VPCCidr" : {
+          "default" : "VPC CIDR"
         },
         "PublicSubnetCidr1" : {
-          "default" : "Public Subet1 CIDR range"
+          "default" : "Public Subet1 CIDR"
         },
         "PublicSubnetCidr2" : {
-          "default" : "Public Subet2 CIDR range"
+          "default" : "Public Subet2 CIDR"
         },
         "ClusterType" : {
-          "default" : "Redshift cluster type"
+          "default" : "Redshift Cluster Type"
         },
         "NumberOfNodes" : {
-          "default" : "Number of cluster nodes"
+          "default" : "Number of Cluster Nodes"
         },
         "NodeType" : {
-          "default" : "Cluster node type"
+          "default" : "Cluster Node Type"
         },
         "MasterUsername" : {
-          "default" : "Master user name"
+          "default" : "Master User Name"
         },
         "MasterUserPassword" : {
-          "default" : "Master user password)"
+          "default" : "Master User Password"
         }
       }
     }
 },
 "Parameters" : {
-    "VpcName" : {
-      "Description" : "Name of the VPC",
+    "VPCName" : {
+      "Description" : "Name of the VPC.",
       "Type"        : "String",
       "Default"     : "HandsonVPC",
       "AllowedPattern" : "([a-zA-Z0-9])+"
     },
-    "VpcCidr" : {
-      "Description" : "CIDR Block for the VPC",
+    "VPCCidr" : {
+      "Description" : "CIDR block for the VPC.",
       "Type"        : "String",
       "Default"     : "10.0.0.0/16",
       "AllowedPattern" : "[a-zA-Z0-9]+\\..+"
@@ -123,7 +123,7 @@
     "myStack4VPC" : {
       "Type" : "AWS::CloudFormation::Stack",
       "Properties" : {
-        "TemplateURL" : "https://s3-ap-northeast-1.amazonaws.com/my-bucket-4-handson/Cfn/vpc.json",
+        "TemplateURL" : "https://s3-ap-northeast-1.amazonaws.com/my-bucket-4-handson/Cfn/VPC.json",
         "Parameters" : {
           "VPCName": {
             "Ref" : "VPCName"
@@ -147,7 +147,7 @@
         "TemplateURL" : "https://s3-ap-northeast-1.amazonaws.com/my-bucket-4-handson/Cfn/redshift.json",
         "Parameters" : {
           "VPC": {
-            "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VpcId" ]
+            "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VPCId" ]
           },
           "SecurityGroup" : {
             "Fn::GetAtt" : [ "myStack4VPC", "Outputs.SecurityGroupId"]
@@ -186,7 +186,7 @@
       "Value": { "Ref" : "myStack4VPC" }
     },
     "Output1FromNestedStackVPC" : {
-      "Value" : { "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VpcId" ] }
+      "Value" : { "Fn::GetAtt" : [ "myStack4VPC", "Outputs.VPCId" ] }
     },
     "StackRef2": {
       "Value": { "Ref" : "myStack4Redshift" }

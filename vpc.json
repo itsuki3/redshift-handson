@@ -1,10 +1,10 @@
 {
     "AWSTemplateFormatVersion" : "2010-09-09",
     "Parameters" : {
-      "VpcName" : {
+      "VPCName" : {
         "Type"        : "String"
       },
-      "VpcCidr" : {
+      "VPCCidr" : {
         "Type"        : "String"
       },
       "PublicSubnetCidr1" : {
@@ -49,7 +49,7 @@
           "InternetGatewayId" : {
             "Ref" : "IGW"
           },
-          "VpcId" : {
+          "VPCId" : {
             "Ref" : "VPC"
           }
         }
@@ -57,7 +57,7 @@
       "PublicSubnet1" : {
         "Type" : "AWS::EC2::Subnet",
         "Properties" : {
-          "VpcId" : {
+          "VPCId" : {
             "Ref" : "VPC"
           },
           "CidrBlock" : {
@@ -78,7 +78,7 @@
       "PublicSubnet2" : {
         "Type" : "AWS::EC2::Subnet",
         "Properties" : {
-          "VpcId" : {
+          "VPCId" : {
             "Ref" : "VPC"
           },
           "CidrBlock" : {
@@ -99,7 +99,7 @@
       "PublicSubnetRT" : {
         "Type" : "AWS::EC2::RouteTable",
         "Properties" : {
-          "VpcId" : {
+          "VPCId" : {
             "Ref" : "VPC"
           },
           "Tags" : [
@@ -147,7 +147,7 @@
       "SecurityGroup" : {
         "Type" : "AWS::EC2::SecurityGroup",
         "Properties" : {
-          "VpcId" : { "Ref" : "VPC" },
+          "VPCId" : { "Ref" : "VPC" },
           "GroupDescription" : "Security group for hands-on.",
           "SecurityGroupIngress" : [
             { "IpProtocol" : "tcp", "FromPort" : 5439, "ToPort" : 5439, "CidrIp" : "0.0.0.0/0" },
@@ -157,7 +157,7 @@
       }
     },
     "Outputs" : {
-      "VpcId" : {
+      "VPCId" : {
         "Description" : "ID of the VPC for this handson.",
         "Value" : { "Ref" : "VPC" }
       },
