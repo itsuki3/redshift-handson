@@ -123,7 +123,7 @@
     "myStack4VPC" : {
       "Type" : "AWS::CloudFormation::Stack",
       "Properties" : {
-        "TemplateURL" : "https://s3-ap-northeast-1.amazonaws.com/my-bucket-4-handson/Cfn/VPC.json",
+        "TemplateURL" : "https://s3-ap-northeast-1.amazonaws.com/my-bucket-4-handson/Cfn/vpc.json",
         "Parameters" : {
           "VPCName": {
             "Ref" : "VPCName"
