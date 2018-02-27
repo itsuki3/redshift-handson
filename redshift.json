@@ -173,12 +173,12 @@
       "Value" : { "Ref" : "RedshiftCluster" }
     },
     "RedshiftClusterEndpoint" : {
-      "Description" : "Cluster endpoint.",
+      "Description" : "Redshift cluster endpoint.",
       "Value" : { "Fn::Join" : [ ":", [ { "Fn::GetAtt" : [ "RedshiftCluster", "Endpoint.Address" ] }, { "Fn::GetAtt" : [ "RedshiftCluster", "Endpoint.Port" ] } ] ] }
     },
-    "Role" : {
-      "Description" : "Name of the role for the Redshift cluster.",
-      "Value" : { "Ref" : "RedshiftRole" }
+    "RedshiftRoleARN" : {
+      "Description" : "Role ARN of the IAM role attached to the Redshift cluster.",
+      "Value" : [ {"Fn::GetAtt" : [ "RedshiftRole", "Arn" ] } ]
     }
   }
 }

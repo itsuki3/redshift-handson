@@ -1,10 +1,10 @@
 {
     "AWSTemplateFormatVersion" : "2010-09-09",
     "Parameters" : {
-      "VPCName" : {
+      "VpcName" : {
         "Type"        : "String"
       },
-      "VPCCidr" : {
+      "VpcCidr" : {
         "Type"        : "String"
       },
       "PublicSubnetCidr1" : {
@@ -85,7 +85,7 @@
             "Ref" : "PublicSubnetCidr2"
           },
           "AvailabilityZone" : {
-            "Fn::Select" : [ 1, { "Fn::GetAZs" : "" } ]
+            "Fn::Select" : [ 2, { "Fn::GetAZs" : "" } ]
           },
           "Tags" : [
             {

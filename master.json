@@ -8,8 +8,8 @@
             "default" : "VPC Configuration"
           },
           "Parameters" : [
-            "VPCName",
-            "VPCCidr",
+            "VpcName",
+            "VpcCidr",
             "PublicSubnetCidr1",
             "PublicSubnetCidr2"
           ]
@@ -29,10 +29,10 @@
         }
       ],
       "ParameterLabels" : {
-        "VPCName" : {
+        "VpcName" : {
           "default" : "VPC Name"
         },
-        "VPCCidr" : {
+        "VpcCidr" : {
           "default" : "VPC CIDR range"
         },
         "PublicSubnetCidr1" : {
@@ -60,13 +60,13 @@
     }
 },
 "Parameters" : {
-    "VPCName" : {
+    "VpcName" : {
       "Description" : "Name of the VPC",
       "Type"        : "String",
       "Default"     : "HandsonVPC",
       "AllowedPattern" : "([a-zA-Z0-9])+"
     },
-    "VPCCidr" : {
+    "VpcCidr" : {
       "Description" : "CIDR Block for the VPC",
       "Type"        : "String",
       "Default"     : "10.0.0.0/16",
