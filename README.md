@@ -1,1 +1,1 @@
-# redshift-handson
+# CloudFormation sample templates for redshift hands-on.
